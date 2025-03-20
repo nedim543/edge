@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-a-service
+  namespace: central-network
+spec:
+  type: NodePort  # Ermöglicht Zugriff von außerhalb des Clusters
+  selector:
+    app: worker-node-a
+  ports:
+    - protocol: TCP
+      port: 5000  # Port für den Zugriff von außen (geht nicht)
+      targetPort: 5000  # Port im Container
+      nodePort: 30021  # Port auf dem Host (30001-32767 erlaubt)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-b-service
+  namespace: central-network
+spec:
+  type: NodePort  # Ermöglicht Zugriff von außerhalb des Clusters
+  selector:
+    app: worker-node-b
+  ports:
+    - protocol: TCP
+      port: 5000  # Port für den Zugriff von außen (geht nicht)
+      targetPort: 5000  # Port im Container
+      nodePort: 30022 # Port auf dem Host (30001-32767 erlaubt)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-c-service
+  namespace: central-network
+spec:
+  type: NodePort  # Ermöglicht Zugriff von außerhalb des Clusters
+  selector:
+    app: worker-node-c
+  ports:
+    - protocol: TCP
+      port: 5000  # Port für den Zugriff von außen (geht nicht)
+      targetPort: 5000  # Port im Container
+      nodePort: 30023  # Port auf dem Host (30001-32767 erlaubt)

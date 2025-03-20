@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-node-a
+  namespace: central-network
+spec:
+  replicas: 1  # Anzahl der Pods
+  selector:
+    matchLabels:
+      app: worker-node-a
+  template:
+    metadata:
+      labels:
+        app: worker-node-a
+    spec:
+      containers:
+        - name: worker-node-a
+          image: stu240498/worker
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NAME
+              value: "a"  # NAME für den ersten Pod
+            - name: CENTRAL_NODE_URL
+              value: "http://central-node.central-network.svc.cluster.local:5000/store"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-node-b
+  namespace: central-network
+spec:
+  replicas: 1  # Anzahl der Pods
+  selector:
+    matchLabels:
+      app: worker-node-b
+  template:
+    metadata:
+      labels:
+        app: worker-node-b
+    spec:
+      containers:
+        - name: worker-node-b
+          image: stu240498/worker
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NAME
+              value: "b"  # NAME für den ersten Pod
+            - name: CENTRAL_NODE_URL
+              value: "http://central-node.central-network.svc.cluster.local:5000/store"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-node-c
+  namespace: central-network
+spec:
+  replicas: 1  # Anzahl der Pods
+  selector:
+    matchLabels:
+      app: worker-node-c
+  template:
+    metadata:
+      labels:
+        app: worker-node-c
+    spec:
+      containers:
+        - name: worker-node-c
+          image: stu240498/worker
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NAME
+              value: "c"  # NAME für den ersten Pod
+            - name: CENTRAL_NODE_URL
+              value: "http://central-node.central-network.svc.cluster.local:5000/store"
+---

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: central-node
+  namespace: central-network
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: central-node
+  template:
+    metadata:
+      labels:
+        app: central-node
+    spec:
+      containers:
+        - name: central-node
+          image: stu240498/central
+          ports:
+            - containerPort: 5000
+
+
