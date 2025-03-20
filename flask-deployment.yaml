@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-node-a
+  namespace: edge-network
+spec:
+  replicas: 1  # Anzahl der Pods
+  selector:
+    matchLabels:
+      app: flask-node-a
+  template:
+    metadata:
+      labels:
+        app: flask-node-a
+    spec:
+      containers:
+        - name: flask-node-a
+          image: stu240498/flask-node
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NAME
+              value: "a"  # NAME für den ersten Pod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-node-b
+  namespace: edge-network
+spec:
+  replicas: 1  # Anzahl der Pods
+  selector:
+    matchLabels:
+      app: flask-node-b
+  template:
+    metadata:
+      labels:
+        app: flask-node-b
+    spec:
+      containers:
+        - name: flask-node-b
+          image: stu240498/flask-node
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NAME
+              value: "b"  # NAME für den zweiten Pod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-node-c
+  namespace: edge-network
+spec:
+  replicas: 1  # Anzahl der Pods
+  selector:
+    matchLabels:
+      app: flask-node-c
+  template:
+    metadata:
+      labels:
+        app: flask-node-c
+    spec:
+      containers:
+        - name: flask-node-c
+          image: stu240498/flask-node
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NAME
+              value: "c"  # NAME für den dritten Pod

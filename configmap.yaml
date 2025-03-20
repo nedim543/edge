@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: node-names
+  namespace: edge-network
+data:
+  flask-nodes-0: "a"
+  flask-nodes-1: "b"
+  flask-nodes-2: "c"

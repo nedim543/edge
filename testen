@@ -1,0 +1,98 @@
+node1:
+FLASK_PORT=5000 NAME=a python3 edgeNode.py 
+
+node2:
+FLASK_PORT=5001 NAME=b python3 edgeNode.py 
+
+TEST:
+curl -X POST -H "Content-Type: application/json" -d '{"node_address": "http://localhost:5001", "node": "b"}' http://localhost:5000/register
+curl -X POST -H "Content-Type: application/json" -d '{"node_address": "http://localhost:5000", "node": "a"}' http://localhost:5001/register
+
+curl -X POST -H "Content-Type: application/json" -d '{
+    "timestamp": "2025-01-17 15:23:48",
+    "activity": "Start Production",
+    "caseid": "case_1", 
+    "node": "a"
+}' http://localhost:5000/event
+
+curl -X POST -H "Content-Type: application/json" -d '{
+    "timestamp": "2025-01-17 15:24:48",
+    "activity": "Start Production",
+    "caseid": "case_1", 
+    "node": "b"
+}' http://localhost:5001/event
+
+curl http://localhost:5000/footprint_matrix  
+curl http://localhost:5001/footprint_matrix  
+
+----------------------------------DOCKER-------------------------------------------
+docker build -t flask-app .
+
+
+docker run -d -p 5000:5000 --env FLASK_PORT=5000 --env NAME=a --name node1 flask-app
+docker run -d -p 5001:5000 --env FLASK_PORT=5001 --env NAME=b --name node2 flask-app
+
+
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' node2
+
+
+
+Fragen:
+warum brauche ich bei curl kein http
+und warum brauche kann ich localhost bei 5000 verwenden
+
+----------------------------------Kubernets-------------------------------------------------HTTP
+kubectl config set-context --current --namespace=edge-network
+
+kubectl exec -it flask-app-b9bbd594-bbwsj -- curl -X POST -H "Content-Type: application/json" -d 
+'{"node_address": "http://10.244.2.80:5000", "node": "a"}' http://10.244.2.79:5000/register
+
+
+
+node1 test
+minikube service flask-node1-service -n edge-network
+curl http://192.168.49.2:30001/footprint_matrix
+
+
+für cluster ip (debug pod)
+kubectl run debug-pod --image=curlimages/curl -it -- /bin/sh  #erstellen
+curl http://<SERVICE-CLUSTER-IP>/pods
+exit 
+kubectl exec -it debug-pod -- /bin/sh # betreten
+
+Echtzeit log
+kubectl logs -f <pod-name>
+
+
+
+für node ip
+kubectl exec -it <existing-pod-name> -n edge-network -- curl http://10.244.2.142:5000/pods           geht auch mit localhost
+
+
+curl -X POST -H "Content-Type: application/json" -d '{
+    "timestamp": "2025-01-17 15:23:48",
+    "activity": "Start Production",
+    "caseid": "case_1", 
+    "node": "a"
+}' http://192.168.49.2:30010/event
+
+curl -X POST -H "Content-Type: application/json" -d '{
+    "timestamp": "2025-01-17 15:24:48",
+    "activity": "Start Production",
+    "caseid": "case_1", 
+    "node": "b"
+}' http://192.168.49.2:30011/event
+
+----------------------------chaos-mesh--------------------------------------
+kubectl port-forward -n chaos-mesh svc/chaos-dashboard 2333:2333
+
+
+kubectl delete podchaos pod-failure-example -n edge-network
+
+
+
+
+
+
+
+most freqent subset
