@@ -1,0 +1,12 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: pod-failure-node-b
+  namespace: edge-network
+spec:
+  action: pod-failure
+  mode: one
+  duration: '100s'
+  selector:
+    labelSelectors:
+      app: flask-node-b 
